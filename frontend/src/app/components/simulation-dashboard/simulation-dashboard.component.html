@@ -1,0 +1,32 @@
+<header class="topbar">
+  <div>
+    <h1>Proto<span>Plasma</span></h1>
+    <p>Real-Time Particle Simulation</p>
+  </div>
+
+  <div class="status" aria-live="polite">
+    <span class="status-dot" aria-hidden="true"></span>
+    <span>{{ connectionStatus() }}</span>
+  </div>
+</header>
+
+<main class="dashboard">
+  <section class="simulation-panel" aria-labelledby="particle-field-heading">
+    <div class="panel-heading">
+      <div>
+        <h2 id="particle-field-heading">Particle Field</h2>
+        <p>2D plasma environment</p>
+      </div>
+
+      <span class="live-badge">● LIVE VIEW</span>
+    </div>
+
+    <canvas #plasmaCanvas width="600" height="600" aria-label="Live plasma particle field"></canvas>
+
+    <div class="simulation-footer">
+      <span>FPS: <strong>{{ fps() }}</strong></span>
+      <span>Particles: <strong>{{ particleCount() }}</strong></span>
+      <span>Tick: <strong>{{ lastTick() }}</strong></span>
+    </div>
+  </section>
+</main>
