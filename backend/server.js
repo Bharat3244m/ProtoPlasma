@@ -1,20 +1,31 @@
 const express = require("express");
 const http = require("http");
-
 const { Server } = require("socket.io");
 
-const SimulationEngine =
-    require("./engine/SimulationEngine");
+// Simulation engine
+const SimulationEngine = require("./engine/SimulationEngine");
 
-const setupSocketHandlers =
-    require("./socket/socketHandler");
+// Socket event handlers
+const setupSocketHandlers = require("./socket/socketHandler");
 
+
+// ==========================================
+// 1. CREATE EXPRESS APPLICATION
+// ==========================================
 
 const app = express();
 
-const server =
-    http.createServer(app);
 
+// ==========================================
+// 2. CREATE HTTP SERVER
+// ==========================================
+
+const server = http.createServer(app);
+
+
+// ==========================================
+// 3. CREATE SOCKET.IO SERVER
+// ==========================================
 
 const io = new Server(server, {
 
@@ -26,32 +37,48 @@ const io = new Server(server, {
 });
 
 
-const simulation =
-    new SimulationEngine(io);
+// ==========================================
+// 4. CREATE SIMULATION
+// ==========================================
+
+const simulation = new SimulationEngine(io);
 
 
-setupSocketHandlers(
-    io,
-    simulation
-);
+// ==========================================
+// 5. SETUP SOCKET EVENTS
+// ==========================================
+
+setupSocketHandlers(io, simulation);
 
 
-// Simple test endpoint
+// ==========================================
+// 6. TEST / STATUS ENDPOINT
+// ==========================================
+
 app.get("/", (req, res) => {
 
     res.json({
+
         project: "ProtoPlasma",
+
         backend: "online",
-        simulationRunning:
-            simulation.running,
-        tick:
-            simulation.tick
+
+        simulationRunning: simulation.running,
+
+        tick: simulation.tick,
+
+        particles: simulation.world.particles.length
+
     });
+
 });
 
 
-const PORT =
-    process.env.PORT || 3000;
+// ==========================================
+// 7. START SERVER
+// ==========================================
+
+const PORT = process.env.PORT || 3000;
 
 
 server.listen(PORT, () => {
@@ -61,6 +88,19 @@ server.listen(PORT, () => {
     );
 
     console.log(
-        `http://localhost:${PORT}`
+        `Backend URL: http://localhost:${PORT}`
     );
+
+
+    // ======================================
+    // AUTO-START SIMULATION
+    // Temporary for frontend integration
+    // ======================================
+
+    simulation.start();
+
+    console.log(
+        "Simulation started automatically"
+    );
+
 });
